@@ -1,3 +1,4 @@
+from collections.abc import Callable
 from functools import partial
 from typing import NamedTuple
 
@@ -27,10 +28,11 @@ class GradientState(NamedTuple):
         "num_particles",
         "max_iters",
         "steps",
+        "gd_interval",
     ),
 )
-def jax_gd_pso(
-    objective_fn: callable,
+def gdpso_jax(
+    objective_fn: Callable,
     bounds: tuple,
     num_dims: int,
     num_particles: int,
@@ -41,6 +43,7 @@ def jax_gd_pso(
     seed: random.PRNGKey,
     eta: float,
     steps: int,
+    gd_interval: int,
     **_: any,
 ) -> tuple:
     key = seed
@@ -126,7 +129,7 @@ def jax_gd_pso(
             return candidate_g_pos, candidate_g_fit
 
         gradient_g_pos, gradient_g_fit = lax.cond(
-            i % 10 == 0,
+            i % gd_interval == 0,
             apply_gradient,
             skip_gradient,
             None,

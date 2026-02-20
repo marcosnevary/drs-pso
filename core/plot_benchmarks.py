@@ -18,7 +18,7 @@ def plot_execution_time(df: pd.DataFrame, config: dict) -> None:
     algorithms = df["Algorithm"].unique()
     dimensions = df["Dimension"].unique()
 
-    colors = ["#909090", "#0080FF"]
+    colors = ["#909090", "#0056AD", "#6D87A1", "#0080FF"]
 
     plt.rcParams.update(
         {
@@ -96,7 +96,7 @@ def plot_convergence(df: pd.DataFrame, config: dict) -> None:
     dimensions = df["Dimension"].unique()
     algorithms = df["Algorithm"].unique()
 
-    colors = ["#909090", "#0080FF"]
+    colors = ["#909090", "#0056AD", "#6D87A1", "#0080FF"]
 
     fig, axes = plt.subplots(4, 4, figsize=(12, 12), sharex=True)
 
@@ -185,6 +185,10 @@ def _generate_comparison_table(
                 display_df.loc[index, col] = f"\\textbf{{{display_df.loc[index, col]}}}"
 
     display_df = display_df.reset_index()
+
+    for col in display_df.columns:
+        if col not in ["Benchmark", "Dimension"]:
+            display_df = display_df.rename(columns={col: f"\\textit{{{col}}}"})
 
     output_path = config["output_path"] / output_filename
 

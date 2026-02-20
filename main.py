@@ -18,10 +18,12 @@ def run_experiment() -> list[dict]:
     for dim in DIMS:
         print(f"Dimension: {dim}")
         for algorithm_name, algorithm_fn in ALGORITHMS.items():
+            backend = "JAX" if "JAX" in algorithm_name else "NumPy"
+
             for benchmark_name, benchmark_config in BENCHMARKS.items():
                 current_config += 1
 
-                objective_fn = benchmark_config[algorithm_name]
+                objective_fn = benchmark_config[backend]
                 bounds = benchmark_config["bounds"]
                 hyperparameters = HYPERPARAMETERS.copy()
                 hyperparameters["num_dims"] = dim
@@ -36,14 +38,14 @@ def run_experiment() -> list[dict]:
                 for i in range(NUM_RUNS):
                     hyperparameters["seed"] = i
 
-                    if algorithm_name in {"JAX-GD-PSO", "JAX-AdamW-PSO"}:
+                    if "JAX" in algorithm_name:
                         hyperparameters["seed"] = random.PRNGKey(i)
                         algorithm_fn(objective_fn, bounds, **hyperparameters)
 
                     start = time.perf_counter()
                     result = algorithm_fn(objective_fn, bounds, **hyperparameters)
 
-                    if algorithm_name in {"JAX-GD-PSO", "JAX-AdamW-PSO"}:
+                    if "JAX" in algorithm_name:
                         block_until_ready(result)
 
                     end = time.perf_counter()

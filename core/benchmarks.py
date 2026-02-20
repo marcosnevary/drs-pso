@@ -2,8 +2,10 @@ import jax.numpy as jnp
 import numpy as np
 from jax import jit
 
-from .jax_gd_pso import jax_gd_pso
+from .gdpso import gdpso
+from .gdpso_jax import gdpso_jax
 from .pso import pso
+from .pso_jax import pso_jax
 
 
 def schwefel_np(x: np.ndarray) -> float:
@@ -58,32 +60,34 @@ def elliptic_jax(x: jnp.ndarray) -> jnp.ndarray:
 BENCHMARKS = {
     "Schwefel": {
         "bounds": (-500, 500),
-        "PSO": schwefel_np,
-        "JAX-GD-PSO": schwefel_jax,
+        "NumPy": schwefel_np,
+        "JAX": schwefel_jax,
     },
     "Rastrigin": {
         "bounds": (-5.12, 5.12),
-        "PSO": rastrigin_np,
-        "JAX-GD-PSO": rastrigin_jax,
+        "NumPy": rastrigin_np,
+        "JAX": rastrigin_jax,
     },
     "Elliptic": {
         "bounds": (-5.0, 10.0),
-        "PSO": elliptic_np,
-        "JAX-GD-PSO": elliptic_jax,
+        "NumPy": elliptic_np,
+        "JAX": elliptic_jax,
     },
     "Sphere": {
         "bounds": (-5.12, 5.12),
-        "PSO": sphere_np,
-        "JAX-GD-PSO": sphere_jax,
+        "NumPy": sphere_np,
+        "JAX": sphere_jax,
     },
 }
 
 ALGORITHMS = {
     "PSO": pso,
-    "JAX-GD-PSO": jax_gd_pso,
+    "GDPSO": gdpso,
+    "PSO-JAX": pso_jax,
+    "GDPSO-JAX": gdpso_jax,
 }
 
-DIMS = [30, 100, 500, 1000]
+DIMS = [10, 30, 50, 100]
 
 HYPERPARAMETERS = {
     "num_dims": None,
@@ -94,11 +98,8 @@ HYPERPARAMETERS = {
     "w": 0.7,
     "seed": None,
     "eta": 0.001,
-    "beta1": 0.9,
-    "beta2": 0.999,
-    "epsilon": 1e-8,
-    "weight_decay": 0.01,
     "steps": 10,
+    "gd_interval": 10,
 }
 
 NUM_RUNS = 10
