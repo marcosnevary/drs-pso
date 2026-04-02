@@ -41,6 +41,8 @@ ignore = [
     "PLR0915", # Too many statements in function definition
     "ERA001",  # Found commented-out code
     "N806",    # Variable name should be lowercase
+    "NPY002",
+    "PLR2004",
 ]
 
 [tool.ruff.format]
